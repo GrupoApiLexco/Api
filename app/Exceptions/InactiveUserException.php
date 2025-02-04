@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
-
+////
 class InactiveUserException extends Exception {
     // Mensaje de error predeterminado cuando se lanza esta excepción
     protected $message = 'Usuario inactivo';
