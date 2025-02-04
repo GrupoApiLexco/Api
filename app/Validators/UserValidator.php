@@ -34,18 +34,25 @@ class UserValidator
         ]);
     }
 
+
+    public static function validateToggleStatus(array $data)
+{
+    return Validator::make($data, [
+        'user_id' => 'required|exists:users,id'
+    ]);
+}
+
     /**
      * Valida los datos para la actualización de un usuario.
      *
     */
-    public static function validateUpdate(array $data)
+    public static function validateUpdate(array $data): \Illuminate\Validation\Validator
     {
         return Validator::make($data, [
-            'name' => 'sometimes|string|max:255', // El nombre no es obligatorio, pero si se envía, debe ser un string de máximo 255 caracteres.
-            'surnames' => 'sometimes|string|max:255', // Igual que el nombre.
-            'email' => 'sometimes|email|unique:users,email,'.$data['id'], // Si se actualiza el email, debe ser único excepto para el usuario actual.
-            'password' => 'sometimes|string|min:8', // La contraseña solo se actualiza si se envía y debe tener mínimo 8 caracteres.
-            'status' => 'sometimes|boolean' // El estado puede ser actualizado, pero debe ser un booleano.
+            'user_id' => 'required|exists:users,id', // Asegura que el user_id sea válido
+            'name' => 'sometimes|string|max:255',    // Solo permite actualizar el nombre
+            'surnames' => 'sometimes|string|max:255', // Solo permite actualizar los apellidos
+            'email' => 'sometimes|email|unique:users,email,' . $data['user_id'], // Solo permite actualizar el email
         ]);
     }
 

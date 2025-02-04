@@ -23,18 +23,13 @@ class UserService
     /**
      * Actualiza la información de un usuario existente.
      *
-     */
-    public function updateUser(User $user, array $data): User
+     */public function updateUser(User $user, array $data): User
     {
-        // Si se proporciona una nueva contraseña, se encripta antes de actualizar.
-        if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        }
+    // Solo actualiza los campos proporcionados en $data
+    $user->fill($data);
+    $user->save();
 
-        // Se actualizan los datos del usuario.
-        $user->update($data);
-
-        return $user;
+    return $user;
     }
 
     /**
