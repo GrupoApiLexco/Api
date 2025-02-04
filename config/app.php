@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    // se registra la vercion del api para utilizarla en las rutas
     'api_version' => 'v1.0.0',
 
     /*

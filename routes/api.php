@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -5,31 +6,36 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 
-$version = config('app.api_version');
+$version = config('app.api_version'); // Se obtiene la versión de la API desde la configuración
 
-// Rutas públicas
-Route::post('/test', [AuthController::class, 'test']);
-Route::post('/login', [AuthController::class, 'login']);
+//  RUTAS PÚBLICAS (No requieren autenticación)
+Route::post('/test', [AuthController::class, 'test']); // Endpoint para verificar la API
+Route::post('/login', [AuthController::class, 'login']); // Endpoint de autenticación
 
-// Rutas protegidas
+//  RUTAS PROTEGIDAS (Requieren autenticación con Sanctum y validación de estado)
 Route::middleware(['auth:sanctum', 'check_active'])->group(function () use ($version) {
-    // Rutas de administración
+    
+    //  RUTAS DE ADMINISTRACIÓN (Acceso restringido solo a administradores)
     Route::prefix("$version/admin")
-        ->middleware(AdminMiddleware::class)
+        ->middleware(AdminMiddleware::class) // Middleware personalizado para admins
         ->group(function () {
-            Route::post('/users/add', [UserController::class, 'store']);
-            Route::get('/users', [UserController::class, 'index']);
-            Route::post('/users/{user}', [UserController::class, 'show']);
-            Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
+            Route::post('/users/add', [UserController::class, 'store']); // Crear usuario
+            Route::get('/users', [UserController::class, 'index']); // Listar usuarios
+            Route::post('/users/{user}', [UserController::class, 'show']); // Ver detalles de un usuario
+            Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']); // Cambiar estado del usuario
         });
 
-    // Rutas generales de usuario
+    //  RUTAS GENERALES PARA USUARIOS (Accesibles para cualquier usuario autenticado)
     Route::prefix($version)->group(function () {
-        Route::put('/users/{user}', [UserController::class, 'update']);
-        Route::post('/users/image', [UserController::class, 'uploadImage']);
+        Route::put('/users/{user}', [UserController::class, 'update']); // Actualizar usuario
+        Route::post('/users/image', [UserController::class, 'uploadImage']); // Subir imagen de usuario
+        
+        //  SERVICIO PARA OBTENER IMÁGENES DE USUARIOS
         Route::get('/users/image/{filename}', function ($filename) {
             return response()->file(storage_path("app/public/user_image/$filename"));
-        })->where('filename', 'user_\d+\.(png|jpg|jpeg)'); // Validación de nombre de archivo
+        })->where('filename', 'user_\d+\.(png|jpg|jpeg)'); // Validación para asegurar nombres de archivo correctos
     });
+
 });
 
+// Tu archivo de rutas está bien estructurado, pero te dejo comentarios para mejorar la organización y comprensión del código.
