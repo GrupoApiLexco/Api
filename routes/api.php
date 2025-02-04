@@ -22,12 +22,12 @@ Route::middleware(['auth:sanctum', 'check_active'])->group(function () use ($ver
             Route::post('/users/add', [UserController::class, 'store']); // Crear usuario
             Route::get('/users', [UserController::class, 'index']); // Listar usuarios
             Route::post('/users/{user}', [UserController::class, 'show']); // Ver detalles de un usuario
-            Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']); // Cambiar estado del usuario
+            Route::post('/users/{user}/delete', [UserController::class, 'toggleStatus']); // Cambiar estado del usuario
         });
 
     //  RUTAS GENERALES PARA USUARIOS (Accesibles para cualquier usuario autenticado)
     Route::prefix($version)->group(function () {
-        Route::put('/users/{user}', [UserController::class, 'update']); // Actualizar usuario
+        Route::post('/users/update', [UserController::class, 'update']); // Actualizar usuario
         Route::post('/users/image', [UserController::class, 'uploadImage']); // Subir imagen de usuario
         
         //  SERVICIO PARA OBTENER IMÁGENES DE USUARIOS
@@ -35,7 +35,4 @@ Route::middleware(['auth:sanctum', 'check_active'])->group(function () use ($ver
             return response()->file(storage_path("app/public/user_image/$filename"));
         })->where('filename', 'user_\d+\.(png|jpg|jpeg)'); // Validación para asegurar nombres de archivo correctos
     });
-
 });
-
-// Tu archivo de rutas está bien estructurado, pero te dejo comentarios para mejorar la organización y comprensión del código.

@@ -37,9 +37,7 @@ class UserValidator
     /**
      * Valida los datos para la actualización de un usuario.
      *
-     * @param array $data Datos proporcionados para actualizar el usuario.
-     * @return \Illuminate\Contracts\Validation\Validator Retorna el validador con las reglas aplicadas.
-     */
+    */
     public static function validateUpdate(array $data)
     {
         return Validator::make($data, [
