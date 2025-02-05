@@ -142,10 +142,16 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
+    
         try {
+            // Subir la imagen usando el servicio
             $path = $this->userService->uploadImage($request->user(), $request->file('image'));
-            return response()->json(['path' => $path]);
+            
+            // Retornar la ruta de la imagen
+            return response()->json([
+                'message' => 'Imagen subida correctamente',
+                'path' => $path
+            ]);
             
         } catch (\Exception $e) {
             Log::error("Image upload error: " . $e->getMessage());

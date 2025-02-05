@@ -60,10 +60,10 @@ class UserValidator
      * Valida la imagen subida por el usuario.
      *
     */
-    public static function validateImage(array $data)
+    public static function validateImage(array $data): \Illuminate\Validation\Validator
     {
         return Validator::make($data, [
-            'image' => 'required|image|mimes:jpeg,png|max:1024' // La imagen es obligatoria, debe ser JPG o PNG y no superar 1MB.
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:1024', // Máximo 1MB, formatos permitidos: jpeg, png, jpg
         ]);
     }
 }

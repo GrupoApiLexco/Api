@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum', 'check_active'])->group(function () use ($ver
 
     //  RUTAS GENERALES PARA USUARIOS (Accesibles para cualquier usuario autenticado)
     Route::prefix($version)->group(function () {
+        
         Route::post('/users/update', [UserController::class, 'update']); // Actualizar usuario
         Route::post('/users/image', [UserController::class, 'uploadImage']); // Subir imagen de usuario
         
@@ -35,4 +36,5 @@ Route::middleware(['auth:sanctum', 'check_active'])->group(function () use ($ver
             return response()->file(storage_path("app/public/user_image/$filename"));
         })->where('filename', 'user_\d+\.(png|jpg|jpeg)'); // Validación para asegurar nombres de archivo correctos
     });
+
 });
