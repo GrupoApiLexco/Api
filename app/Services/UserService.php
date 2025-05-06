@@ -23,18 +23,13 @@ class UserService
     /**
      * Actualiza la información de un usuario existente.
      *
-     */
-    public function updateUser(User $user, array $data): User
+     */public function updateUser(User $user, array $data): User
     {
-        // Si se proporciona una nueva contraseña, se encripta antes de actualizar.
-        if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        }
+    // Solo actualiza los campos proporcionados en $data
+    $user->fill($data);
+    $user->save();
 
-        // Se actualizan los datos del usuario.
-        $user->update($data);
-
-        return $user;
+    return $user;
     }
 
     /**
@@ -55,15 +50,23 @@ class UserService
      */
     public function uploadImage(User $user, $image): string
     {
-        // Se define la ruta donde se almacenará la imagen.
-        $path = "user_image/user_{$user->id}.".$image->extension();
-
-        // Se almacena la imagen en el disco 'public'.
-        Storage::disk('public')->put($path, file_get_contents($image));
-
-        // Se actualiza la ruta de la imagen en el perfil del usuario.
-        $user->update(['image_path' => $path]);
-
-        return $path;
+        // Eliminar la imagen anterior si existe
+        if ($user->image_path && Storage::exists($user->image_path)) {
+            Storage::delete($user->image_path);
+        }
+    
+        // Generar el nombre del archivo
+        $extension = $image->getClientOriginalExtension(); // Obtener la extensión del archivo
+        $filename = 'user_' . $user->id . '.' . $extension; // Formato: user_<id>.<extensión>
+    
+        // Guardar la imagen en la ruta especificada
+        $path = $image->storeAs('public/user_image', $filename);
+    
+        // Actualizar la ruta de la imagen en el usuario
+        $user->image_path = $path;
+        $user->save();
+    
+        // Retornar la ruta relativa de la imagen
+        return str_replace('public/', 'storage/', $path);
     }
 }
